@@ -1,0 +1,3 @@
+package Mechanize
+
+trait Entity
