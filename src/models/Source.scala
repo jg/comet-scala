@@ -7,7 +7,5 @@ trait Source {
   def name: String = ???
 
   def issues: Seq[Issue] = ???
-
-  lazy val agent: MechanizeAgent = new MechanizeAgent()
 }
 
