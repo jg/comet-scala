@@ -2,6 +2,8 @@ import org.joda.time.DateTime
 
 object Date {
   def now: Date = new Date(new DateTime())
+
+  def apply(s: String) = new Date(DateTime.parse(s))
 }
 
 class Date(d: DateTime) {
