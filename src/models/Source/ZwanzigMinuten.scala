@@ -1,2 +1,1 @@
-trait ZwanzigMinuten extends DateSource with FullAggregation {
-}
+trait ZwanzigMinuten extends DateSource with FullAggregation
