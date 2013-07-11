@@ -19,7 +19,9 @@ libraryDependencies ++= Seq(
   "junit" % "junit" % "4.11" % "test",
   "com.novocode" % "junit-interface" % "0.7" % "test->default",
   "joda-time"         % "joda-time"           % "2.1",
-  "org.joda" % "joda-convert" % "1.2"
+  "org.joda" % "joda-convert" % "1.2",
+  "com.typesafe.slick" %% "slick" % "1.0.1",
+  "org.slf4j" % "slf4j-nop" % "1.6.4"
 )
 
 // Note: These settings are defaults for activator, and reorganize your source directories.

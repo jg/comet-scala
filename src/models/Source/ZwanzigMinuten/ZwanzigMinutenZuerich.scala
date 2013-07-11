@@ -1,4 +1,6 @@
 class ZwanzigMinutenZuerich extends ZwanzigMinuten {
+  def sourceType: String = "Source::ZwanzigMinuten::Zuerich"
+
   def isRipe(date: Date) = true
 
   def aggregate(date: Date): Option[AggregationData] = get(aggregationUrl(date)) match {
