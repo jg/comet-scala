@@ -26,4 +26,15 @@ object Source {
   }
 
   def getSourceInstanceByType(t: String): Option[Source] = sourceList.find(_.sourceType == t)
+
+  def apply(id: Long, name: String, sourceType: String): Source = {
+    // This assumes we have a class with corresponding sourceType in the Database
+    // Better fail at this point anyway
+    val source = getSourceInstanceByType(sourceType).get
+    source.id = id
+    source.name = name
+    source
+  }
+
+  def unapply(s: Source) = Some(s.id, s.name, s.sourceType)
 }
