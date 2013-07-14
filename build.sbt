@@ -21,7 +21,8 @@ libraryDependencies ++= Seq(
   "joda-time"         % "joda-time"           % "2.1",
   "org.joda" % "joda-convert" % "1.2",
   "com.typesafe.slick" %% "slick" % "1.0.1",
-  "org.slf4j" % "slf4j-nop" % "1.6.4"
+  "org.slf4j" % "slf4j-nop" % "1.6.4",
+  "com.ning" % "async-http-client" % "1.7.18"
 )
 
 // Note: These settings are defaults for activator, and reorganize your source directories.
