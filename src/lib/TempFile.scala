@@ -1,4 +1,3 @@
-package Comet
 import java.io._
 
 object TempFile {
@@ -8,6 +7,6 @@ object TempFile {
   implicit def TempFileToJavaFile(f: TempFile): File = f.toFile
 }
 
-class TempFile(f: File) {
-  def toFile: File = f
+case class TempFile(val file: File) {
+  def toFile: File = file
 }
