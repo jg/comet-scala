@@ -2,32 +2,46 @@ package Mechanize
 
 import java.net._
 import java.io._
-import Comet.TempFile
+
+import com.ning.http.client._
+import com.ning.http.client.AsyncHandler.STATE
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 trait Agent {
-  def get(uri: String): Option[Entity] = {
-    val url: URL = new URL(uri)
-    val conn: URLConnection = url.openConnection()
+  val client = new AsyncHttpClient()
 
-    /*
-    val inputStream = new InputStreamReader(url.openStream())
-        val reader: BufferedReader = new BufferedReader(inputStream)
-        val lines = Iterator.continually(reader.readLine()).takeWhile(_ != null)
-        val content = lines.reduceLeft[String] { (acc, n) => acc + "\n" + n}
-    */
-
-    conn.getContentType() match  {
-      case "application/pdf" => Some(new PdfFile(inputStreamToFile(url.openStream())))
-      case _ @ contentType => throw new Exception(s"Unmatched content type $contentType")
+  /** Nedds an uri and a File to write to, will return same file with contents or None */
+  def getFile(uri: String, file: File): Future[Option[File]] = {
+    def buildGetRequest: Request = {
+      val builder = new RequestBuilder("GET")
+      builder.setUrl(uri).build()
     }
-  }
 
-  private def inputStreamToFile(is: InputStream): TempFile = {
-    val f = TempFile()
-    val in = scala.io.Source.fromInputStream(is)(scala.io.Codec.ISO8859)
-    val out = new java.io.PrintWriter(f)
-    try { in.getLines().foreach(out.print(_)) }
-    finally { out.close }
-    f
+    val resultPromise = promise[Option[File]]
+    val futureWithResult: Future[Option[File]] = resultPromise.future
+    val outStream = new FileOutputStream(file)
+
+    val response = client.executeRequest(buildGetRequest, new AsyncHandler[Future[Option[File]]]() {
+      def onStatusReceived(headers: HttpResponseStatus): AsyncHandler.STATE = STATE.CONTINUE
+
+      def onHeadersReceived(headers: HttpResponseHeaders): AsyncHandler.STATE = STATE.CONTINUE
+
+      def onBodyPartReceived(bodyPart: HttpResponseBodyPart): AsyncHandler.STATE = {
+        bodyPart.writeTo(outStream)
+        STATE.CONTINUE
+      }
+
+      def onCompleted() =  {
+        resultPromise.success(Some(file))
+        futureWithResult
+      }
+
+      def onThrowable(t: Throwable) = {
+        resultPromise.failure(t)
+      }
+    })
+
+    futureWithResult
   }
 }

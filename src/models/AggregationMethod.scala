@@ -1,3 +1,5 @@
+import scala.concurrent._
+
 trait AggregationMethod
 
 /** For sources for which needs manual uploading */
@@ -8,12 +10,12 @@ trait ManualAggregation extends AggregationMethod
  */
 trait FullAggregation extends AggregationMethod with Mechanize.Agent {
   type IssueId
-  def aggregate(id: IssueId): Option[AggregationData]
+  def aggregate(id: IssueId, f: AggregationData): Future[Option[AggregationData]]
 }
 
 /** For some sources we can only grab what is available at the moment of aggregation */
 trait LimitedAggregation extends AggregationMethod with Mechanize.Agent {
   type IssueId
 
-  def aggregateAvailable: Option[AggregationData]
+  def aggregateAvailable(f: AggregationData): Future[Option[AggregationData]]
 }
